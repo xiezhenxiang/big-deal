@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>indi.shine</groupId>
-    <artifactId>stock-crawler</artifactId>
+    <artifactId>big-deal</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
