@@ -18,11 +18,11 @@ public class RightSideStrategy {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        ThreadUtil threadUtil = new ThreadUtil(15, 10);
+        ThreadUtil threadUtil = new ThreadUtil(10, 10);
         for (String code : allStockCodes()) {
             threadUtil.execute(() -> {
                 List<StockLineDay> lineDays = stockLineDays(code, false);
-                if (check(code, lineDays)) {
+                if (lineDays.size() > TRADE_DAYS_OF_YEAR * 2 && check(code, lineDays)) {
                     //System.out.println(code);
                 }
             });
@@ -33,23 +33,42 @@ public class RightSideStrategy {
     }
 
     private static boolean check(String code, List<StockLineDay> lineDays) {
-        int tryDistance = TRADE_DAYS_OF_MONTH;
-        if (lineDays.size() < TRADE_DAYS_OF_YEAR) {
+
+        int start = lineDays.size() - TRADE_DAYS_OF_MONTH * 2;
+        Double startPrice = lineDays.get(start).getPrice();
+        Double endPrice = lineDays.get(lineDays.size() - 1).getPrice();
+        double sf = (endPrice - startPrice) / startPrice;
+        if (sf < 0.15) {
             return false;
         }
-        // 寻找拐点
-        for (int i = lineDays.size() - 1; i >= lineDays.size() - tryDistance; i--) {
-            if (isTurnPoint(code, lineDays, i)) {
-                break;
-            }
+        double[] startPoint = {0, startPrice}, endPoint = {TRADE_DAYS_OF_MONTH * 2, endPrice};
+        int x = 0;
+        double sum = 0;
+        for(int i = start; i < lineDays.size(); i ++) {
+            sum += shortestDistanceToLine(startPoint, endPoint, new double[]{x, lineDays.get(i).getPrice()});
+            x ++;
         }
+        double avg = sum / x;
+        if (code.equals("000063")) {
+            System.out.println("1111");
+        }
+        System.out.println(code + " " + sf + " " + avg);
         return false;
     }
+
+    public static double shortestDistanceToLine(double[] pointA, double[] pointB, double[] pointC) {
+        // 计算直线方程系数
+        double a = pointB[1] - pointA[1];
+        double b = pointA[0] - pointB[0];
+        double c = pointB[0] * pointA[1] - pointA[0] * pointB[1];
+        // 计算点C到直线的距离
+        return Math.abs(a * pointC[0] + b * pointC[1] + c) / Math.sqrt(a * a + b * b);
+    }
     
-    /** 是否拐点 */
-    private static boolean isTurnPoint(String code, List<StockLineDay> lineDays, int index) {
+    /** 是否左侧拐点 */
+    private static boolean isLeftTurnPoint(String code, List<StockLineDay> lineDays, int index) {
         String day = lineDays.get(index).getDay();
-        int tryDistance = TRADE_DAYS_OF_MONTH * 2;
+        int tryDistance = TRADE_DAYS_OF_MONTH * 3;
         Double lastPrice = lineDays.get(index).getPrice(), startPrice = lastPrice;
         Double price;
         for (; index >= lineDays.size() - tryDistance; index -= 5) {
@@ -63,7 +82,26 @@ public class RightSideStrategy {
         if (Math.abs(chg) < 20) {
             return false;
         }
-        System.out.println("code: " + code + " have turn point at " + day + " chg: " + chg);
+        return true;
+    }
+
+    /** 是否右侧拐点 */
+    private static boolean isRightTurnPoint(String code, List<StockLineDay> lineDays, int index) {
+        String day = lineDays.get(index).getDay();
+        Double lastPrice = lineDays.get(index).getPrice(), startPrice = lastPrice;
+        Double price;
+        for (; index < lineDays.size(); index += 5) {
+            price = lineDays.get(index).getPrice();
+            if (price < lastPrice) {
+                return false;
+            }
+            lastPrice = price;
+        }
+        double chg = (lastPrice - startPrice) % lastPrice;
+        if (Math.abs(chg) < 10) {
+            return false;
+        }
+        System.out.println("code: " + code + " have right turn point at " + day + " chg: " + chg);
         return true;
     }
 }
