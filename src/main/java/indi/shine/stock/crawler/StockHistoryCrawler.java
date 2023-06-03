@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static indi.shine.stock.env.EnvConfig.MONGO_UTIL;
@@ -54,13 +55,13 @@ public class StockHistoryCrawler {
         log.info("历史数据爬取完成");
     }
 
-
-
     public static List<String> allStockCodes() {
         List<String> ls = new ArrayList<>();
         MongoCursor<Document> cursor = MONGO_UTIL.find(EnvConfig.BIG_DEAL_DB, EnvConfig.STOCKS_TB, new Document());
         cursor.forEachRemaining(s -> {
-            ls.add(s.getString("_id"));
+            if (!s.getString("name").contains("ST")) {
+                ls.add(s.getString("_id"));
+            }
         });
         return ls;
     }
@@ -86,6 +87,7 @@ public class StockHistoryCrawler {
                 lineDays.add(lineDay);
             }
         }
+        Collections.reverse(lineDays);
         return lineDays;
     }
 

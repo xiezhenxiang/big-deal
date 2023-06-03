@@ -13,7 +13,6 @@ import static indi.shine.stock.common.biz.TradeStatusBiz.isTradeTime;
 
 /**
  * https://data.eastmoney.com/zjlx/detail.html
- * 在
  * @author xiezhenxiang 2022/7/20
  */
 @Slf4j
@@ -31,6 +30,7 @@ public class StockAllCrawler/* extends Thread*/ {
     }
 
     public static void start() {
+        MONGO_UTIL.delete(BIG_DEAL_DB, STOCKS_TB, new Document());
         crawl(H_URL, "沪");
         crawl(S_URL, "深");
     }
@@ -57,9 +57,8 @@ public class StockAllCrawler/* extends Thread*/ {
     }
 
     private static void insert(String code, String name, String type) {
-        boolean has = MONGO_UTIL.find(BIG_DEAL_DB, STOCKS_TB, new Document("_id", code)).hasNext();
-        if (has) {
-            System.out.println(code);
+        if (name.contains("ST")) {
+            return;
         }
         Document doc = new Document();
         doc.put("_id", code);
