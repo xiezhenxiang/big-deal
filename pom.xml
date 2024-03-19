@@ -23,6 +23,20 @@
         <dependency>
             <groupId>ai.plantdata.script</groupId>
             <artifactId>script-util</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>script-common</artifactId>
+                    <groupId>ai.plantdata.script</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>graph-logging</artifactId>
+                    <groupId>com.plantdata.log</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>ojdbc6</artifactId>
+                    <groupId>com.oracle</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <build>
