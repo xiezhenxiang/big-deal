@@ -26,10 +26,10 @@ public class StockHistoryCrawler {
     private static final boolean NOT_FIRST = true;
 
     public static void main(String[] args) {
-        if (!TradeStatusBiz.isTradeDay()) {
+        /*if (!TradeStatusBiz.isTradeDay()) {
             log.info("not trade day");
             return;
-        }
+        }*/
         log.info("开始爬取历史数据");
         List<String> codes = allStockCodes();
         BulkInsertBiz bulkInsertBiz = new BulkInsertBiz(EnvConfig.BIG_DEAL_DB, EnvConfig.STOCKS_HISTORY_TB);

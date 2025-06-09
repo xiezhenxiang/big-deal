@@ -19,6 +19,7 @@ public class ZhenCangStrategy implements Strategy {
     @Override
     public void getBuyPoint(String code) {
         List<StockLineDay> lineDays = stockLineDays(code, false);
+        System.out.println(code + " " + lineDays.size());
         lineDays = lineDays.subList(8, lineDays.size());
         StockLineDay day = lineDays.get(0);
         StockLineDay preDay = lineDays.get(1);

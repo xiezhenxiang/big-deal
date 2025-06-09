@@ -8,8 +8,8 @@ import org.bson.Document;
 
 import java.util.List;
 
-import static indi.shine.stock.env.EnvConfig.*;
 import static indi.shine.stock.common.biz.TradeStatusBiz.isTradeTime;
+import static indi.shine.stock.env.EnvConfig.*;
 
 /**
  * https://data.eastmoney.com/zjlx/detail.html
@@ -24,9 +24,9 @@ public class StockAllCrawler/* extends Thread*/ {
     private static final String S_URL = "https://push2.eastmoney.com/api/qt/clist/get?fid=f62&po=1&pz=100&pn=pageNo&np=1&fltt=2&invt=2&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf3%2Cf62%2Cf184%2Cf66%2Cf69%2Cf72%2Cf75%2Cf78%2Cf81%2Cf84%2Cf87%2Cf204%2Cf205%2Cf124%2Cf1%2Cf13";
 
     public static void main(String[] args) {
-        if (!isTradeTime()) {
+        // if (isTradeTime()) {
             start();
-        }
+        //}
     }
 
     public static void start() {

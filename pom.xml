@@ -25,10 +25,6 @@
             <artifactId>script-util</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>script-common</artifactId>
-                    <groupId>ai.plantdata.script</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>graph-logging</artifactId>
                     <groupId>com.plantdata.log</groupId>
                 </exclusion>
