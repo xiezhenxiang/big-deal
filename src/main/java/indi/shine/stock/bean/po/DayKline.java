@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class StockLineDay {
+public class DayKline {
 
     public String day;
     public Double price;

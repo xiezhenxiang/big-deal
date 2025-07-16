@@ -1,6 +1,5 @@
 package indi.shine.stock.common.biz;
 
-import ai.plantdata.script.util.database.MongoUtil;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
@@ -9,13 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import static indi.shine.stock.crawler.StockHistoryCrawler.allStockCodes;
+import static indi.shine.stock.common.biz.DataCenterBiz.allStockCodes;
 import static indi.shine.stock.env.EnvConfig.*;
 
 /**
@@ -33,7 +28,7 @@ public class ChildrenBiz {
         for (String code : codes) {
             int index = -1 ;
             Bson q = Filters.and(Filters.eq("code", code), Filters.lte("day", endTime));
-            MongoCursor<Document> cursor = MONGO_UTIL.find(BIG_DEAL_DB, STOCKS_HISTORY_TB, q, Sorts.descending("day"));
+            MongoCursor<Document> cursor = MONGO_UTIL.find(BIG_DEAL_DB, STOCKS_DAY_KLINE_TB, q, Sorts.descending("day"));
             while (cursor.hasNext()) {
                 /*if (++ index == arr.length) {
                     MongoCursor<Document> cursor2 = MONGO_UTIL.find(EnvConfig.BIG_DEAL_DB, EnvConfig.STOCKS_TB, new Document("_id", code));

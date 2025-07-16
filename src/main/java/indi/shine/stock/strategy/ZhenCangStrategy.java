@@ -1,11 +1,11 @@
 package indi.shine.stock.strategy;
 
 import indi.shine.stock.bean.po.BuyPoint;
-import indi.shine.stock.bean.po.StockLineDay;
+import indi.shine.stock.bean.po.DayKline;
 
 import java.util.List;
 
-import static indi.shine.stock.crawler.StockHistoryCrawler.stockLineDays;
+import static indi.shine.stock.common.biz.DataCenterBiz.dayKlines;
 
 /**
  * @author xiezhenxiang 2023/6/2
@@ -18,11 +18,10 @@ public class ZhenCangStrategy implements Strategy {
 
     @Override
     public void getBuyPoint(String code) {
-        List<StockLineDay> lineDays = stockLineDays(code, false);
-        System.out.println(code + " " + lineDays.size());
+        List<DayKline> lineDays = dayKlines(code);
         lineDays = lineDays.subList(8, lineDays.size());
-        StockLineDay day = lineDays.get(0);
-        StockLineDay preDay = lineDays.get(1);
+        DayKline day = lineDays.get(0);
+        DayKline preDay = lineDays.get(1);
         if (day.getChg() < 1.8 || day.getChg() >= 5) {
             return;
         }

@@ -37,12 +37,12 @@ public class MorningUpStrategy implements Strategy {
         MONGO_UTIL.delete(BIG_DEAL_DB, CANDIDATE_CODE_TB, new Document());
         for (String code : allStockCodes()) {
             THREAD_UTIL.execute(() -> {
-                List<StockLineDay> lineDays = stockLineDays(code, false);
+                List<DayKline> lineDays = DayKlines(code, false);
                 if (lineDays.size() < TRADE_DAYS_OF_YEAR ) {
                     return;
                 }
                 Collections.reverse(lineDays);
-                StockLineDay lastDay = lineDays.get(0);
+                DayKline lastDay = lineDays.get(0);
                 Double chg = lastDay.getChg();
                 if (chg >= 8) {
                     Document doc = new Document("code", code).append("chg", lastDay.getChg()).append("day", lastDay.getDay());

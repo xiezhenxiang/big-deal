@@ -13,21 +13,29 @@ public class BulkInsertBiz {
 
     private final String dbName;
     private final String tbName;
+    private final String[] upsertFields;
+    private Integer batchSize;
     private final List<Document> ls = new ArrayList<>();
 
-    public BulkInsertBiz(String dbName, String tbName) {
+    public BulkInsertBiz(String dbName, String tbName, Integer batchSize, String... upsertFields) {
         this.dbName = dbName;
         this.tbName = tbName;
+        this.batchSize = batchSize;
+        this.upsertFields = upsertFields;
     }
 
-    public void add(Document doc) {
+    public synchronized void add(Document doc) {
         ls.add(doc);
         flush(false);
     }
 
     public void flush(boolean force) {
-        if (force || ls.size() >= 1000) {
-            EnvConfig.MONGO_UTIL.insertMany(dbName, tbName, ls);
+        if (force || ls.size() >= batchSize) {
+            if (upsertFields == null || upsertFields.length == 0) {
+                EnvConfig.MONGO_UTIL.insertMany(dbName, tbName, ls);
+            } else {
+                EnvConfig.MONGO_UTIL.upsertMany(dbName, tbName, ls, true, upsertFields);
+            }
             ls.clear();
         }
     }

@@ -1,16 +1,11 @@
 package indi.shine.stock.strategy;
 
-import ai.plantdata.script.util.other.ThreadUtil;
-import indi.shine.stock.bean.CodeHammer;
 import indi.shine.stock.bean.po.BuyPoint;
-import indi.shine.stock.bean.po.StockLineDay;
+import indi.shine.stock.bean.po.DayKline;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static indi.shine.stock.bean.Constant.TRADE_DAYS_OF_YEAR;
-import static indi.shine.stock.crawler.StockHistoryCrawler.allStockCodes;
-import static indi.shine.stock.crawler.StockHistoryCrawler.stockLineDays;
+import static indi.shine.stock.common.biz.DataCenterBiz.dayKlines;
 
 /**
  * 多腿支撑策略
@@ -20,8 +15,8 @@ public class HammerStrategy implements Strategy {
 
     @Override
     public void getBuyPoint(String code) {
-        List<StockLineDay> lineDays = stockLineDays(code, false);
-        StockLineDay lineDay = lineDays.get(0);
+        List<DayKline> lineDays = dayKlines(code);
+        DayKline lineDay = lineDays.get(0);
         double score = hammerScore(lineDay);
         if (score > 0) {
             BUY_POINTS.add(new BuyPoint(code, lineDay.getDay(), score, lineDay.getPrice()));
@@ -32,7 +27,7 @@ public class HammerStrategy implements Strategy {
         new HammerStrategy().run();
     }
 
-    private static double hammerScore(StockLineDay lineDay) {
+    private static double hammerScore(DayKline lineDay) {
         double bodySize = Math.abs(lineDay.getOpenPrice() - lineDay.getPrice());
         double upperShadow = lineDay.getMaxPrice() - Math.max(lineDay.getOpenPrice(), lineDay.getPrice());
         double lowerShadow = Math.min(lineDay.getOpenPrice(), lineDay.getPrice()) - lineDay.getMinPrice();

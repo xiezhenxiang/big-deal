@@ -2,7 +2,7 @@ package indi.shine.stock.strategy;/*
 package indi.shine.stock.strategy;
 
 import indi.shine.stock.bean.po.BuyPoint;
-import indi.shine.stock.bean.po.StockLineDay;
+import indi.shine.stock.bean.po.DayKline;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ public class ContinueDeclineStrategy implements Strategy {
     }
 
     @Override
-    public void getBuyPoint(String code, List<StockLineDay> lineDays) {
+    public void getBuyPoint(String code, List<DayKline> lineDays) {
         boolean flag = true;
         for (int i = lineDays.size() - 20; i < lineDays.size() - 2; i++) {
-            StockLineDay lineDay = lineDays.get(i);
+            DayKline lineDay = lineDays.get(i);
             if (lineDay.getChg() > 0) {
                 flag = false;
                 break;

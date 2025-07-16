@@ -2,24 +2,35 @@ package indi.shine.stock.common.biz;
 
 import ai.plantdata.script.util.other.TimeUtil;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-
-import static indi.shine.stock.common.biz.HolidayBiz.isHoliday;
+import java.util.List;
 
 /**
  * @author xiezhenxiang 2022/7/21
  */
-public class TradeStatusBiz {
+public class TradeTimeBiz {
+
+    private static final List<String> HOLIDAYS = new ArrayList<>();
+    static {
+        HOLIDAYS.add("2025-10-01");
+        HOLIDAYS.add("2025-10-02");
+        HOLIDAYS.add("2025-10-03");
+        HOLIDAYS.add("2025-10-04");
+        HOLIDAYS.add("2025-10-05");
+        HOLIDAYS.add("2025-10-06");
+        HOLIDAYS.add("2025-10-07");
+        HOLIDAYS.add("2025-10-08");
+    }
 
     /**
      * 今天是否交易日
      */
     public static boolean isTradeDay() {
         String today = TimeUtil.nowStr().substring(0, 10);
-        if (isHoliday(today)) {
+        if (HOLIDAYS.contains(today)) {
             return false;
         }
-
         Calendar calendar = Calendar.getInstance();
         boolean isFirstSunday = (calendar.getFirstDayOfWeek() == Calendar.SUNDAY);
         int weekDay = calendar.get(Calendar.DAY_OF_WEEK);
@@ -33,7 +44,7 @@ public class TradeStatusBiz {
     }
 
     public static void main(String[] args) {
-        System.out.println(isTradeTime());
+        System.out.println(isTradeDay());
     }
 
     /**

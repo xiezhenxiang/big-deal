@@ -1,10 +1,10 @@
 package indi.shine.stock.strategy;
 
-import indi.shine.stock.bean.po.StockLineDay;
+import indi.shine.stock.bean.po.DayKline;
 
 import java.util.List;
 
-import static indi.shine.stock.crawler.StockHistoryCrawler.stockLineDays;
+import static indi.shine.stock.common.biz.DataCenterBiz.dayKlines;
 
 /**
  * 无为釜底抽薪策略
@@ -24,12 +24,12 @@ public class TopFootTopStrategy implements Strategy {
 
     @Override
     public void getBuyPoint(String code) {
-        List<StockLineDay> lineDays = stockLineDays(code, false);
+        List<DayKline> lineDays = dayKlines(code);
         int index = 0;
         lineDays = lineDays.subList(index, lineDays.size());
-        StockLineDay day1 = lineDays.get(index + 2);
-        StockLineDay day2 = lineDays.get(index + 1);
-        StockLineDay day3 = lineDays.get(index);
+        DayKline day1 = lineDays.get(index + 2);
+        DayKline day2 = lineDays.get(index + 1);
+        DayKline day3 = lineDays.get(index);
 
         // 涨停天
         if (day1.getChg() < 9.8) {

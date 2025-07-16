@@ -2,15 +2,15 @@ package indi.shine.stock.strategy;/*
 package indi.shine.stock.strategy;
 
 import ai.plantdata.script.util.other.ThreadUtil;
-import indi.shine.stock.bean.po.StockLineDay;
+import indi.shine.stock.bean.po.DayKline;
 import org.apache.kafka.common.metrics.stats.Min;
 
 import java.util.List;
 
 import static indi.shine.stock.bean.Constant.TRADE_DAYS_OF_MONTH;
 import static indi.shine.stock.bean.Constant.TRADE_DAYS_OF_YEAR;
-import static indi.shine.stock.crawler.StockHistoryCrawler.allStockCodes;
-import static indi.shine.stock.crawler.StockHistoryCrawler.stockLineDays;
+import static indi.shine.stock.crawler.StockDayKLineCrawler.allStockCodes;
+import static indi.shine.stock.crawler.StockDayKLineCrawler.DayKlines;
 
 */
 /**
@@ -24,7 +24,7 @@ public class RightSideStrategy {
         ThreadUtil threadUtil = new ThreadUtil(15, 10);
         for (String code : allStockCodes()) {
             threadUtil.execute(() -> {
-                List<StockLineDay> lineDays = stockLineDays(code, false);
+                List<DayKline> lineDays = DayKlines(code, false);
                 if (check(code, lineDays)) {
                     //System.out.println(code);
                 }
@@ -35,7 +35,7 @@ public class RightSideStrategy {
         System.out.println("cost: " + ((end -start) / 1000 * 1.0 / 60) + "min");
     }
 
-    private static boolean check(String code, List<StockLineDay> lineDays) {
+    private static boolean check(String code, List<DayKline> lineDays) {
         int tryDistance = TRADE_DAYS_OF_MONTH;
         if (lineDays.size() < TRADE_DAYS_OF_YEAR) {
             return false;
@@ -52,7 +52,7 @@ public class RightSideStrategy {
     */
 /** 是否拐点 *//*
 
-    private static boolean isTurnPoint(String code, List<StockLineDay> lineDays, int index) {
+    private static boolean isTurnPoint(String code, List<DayKline> lineDays, int index) {
         String day = lineDays.get(index).getDay();
         int tryDistance = TRADE_DAYS_OF_MONTH * 2;
         Double lastPrice = lineDays.get(index).getPrice(), startPrice = lastPrice;

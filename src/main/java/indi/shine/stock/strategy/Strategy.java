@@ -5,7 +5,7 @@ import indi.shine.stock.bean.po.BuyPoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import static indi.shine.stock.crawler.StockHistoryCrawler.allStockCodes;
+import static indi.shine.stock.common.biz.DataCenterBiz.allStockCodes;
 import static indi.shine.stock.env.EnvConfig.THREAD_UTIL;
 
 /**
@@ -21,10 +21,15 @@ public interface Strategy {
     }
 
     default void run() {
-        for (String code : getCodes()) {
+        List<String> codes = getCodes();
+        int cnt = 0;
+        for (String code : codes) {
             THREAD_UTIL.execute(() -> {
                 getBuyPoint(code);
             });
+            if (++ cnt % 100 == 0) {
+                System.out.println("process: " + cnt + "/" + codes.size());
+            }
         }
         THREAD_UTIL.closeWithSafe();
         printResult();
