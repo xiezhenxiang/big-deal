@@ -38,7 +38,7 @@ public class StockDayKLineCrawler {
             String code = codes.get(i);
             Document doc = crawlDayKLine(code);
             bulkInsertBiz.add(doc);
-            Thread.sleep(RANDOM.nextInt(301) + 1000L);
+            Thread.sleep(RANDOM.nextInt(301) + 500L);
             log.info("进度：{}/{}", i + 1, codes.size());
         }
         bulkInsertBiz.flush(true);
@@ -47,7 +47,6 @@ public class StockDayKLineCrawler {
 
     private static Document crawlDayKLine(String code) {
         String url = EnvConfig.kLineUrl(code);
-        System.out.println(url);
         String rs = HttpUtil.sendGet(url);
         JSONObject rsObj = JSONObject.parseObject(rs);
         JSONObject data = rsObj.getJSONObject("data");
