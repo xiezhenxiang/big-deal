@@ -22,7 +22,7 @@ public class EnvConfig {
     public static final String STOCKS_TB = "stocks";
     public static final String STOCKS_DAY_KLINE_TB = "day_klines";
 
-    public static final ThreadUtil THREAD_UTIL = new ThreadUtil(2, 20);
+    public static final ThreadUtil THREAD_UTIL = new ThreadUtil(5, 20);
 
     public static final Random RANDOM = new Random();
 

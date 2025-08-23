@@ -6,10 +6,8 @@ import indi.shine.stock.common.BulkInsertBiz;
 import indi.shine.stock.env.EnvConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-
 import java.util.Collections;
 import java.util.List;
-
 import static indi.shine.stock.common.biz.DataCenterBiz.allStockCodes;
 import static indi.shine.stock.common.biz.TradeTimeBiz.isTradeDay;
 import static indi.shine.stock.env.EnvConfig.*;
@@ -19,7 +17,6 @@ import static indi.shine.stock.env.EnvConfig.*;
  */
 @Slf4j
 public class StockDayKLineCrawler {
-
 
     public static void main(String[] args) throws InterruptedException {
         if (!isTradeDay()) {
@@ -32,7 +29,7 @@ public class StockDayKLineCrawler {
         /*MongoCursor<Document> cursor = MONGO_UTIL.getClient().getDatabase(BIG_DEAL_DB).getCollection(STOCKS_DAY_KLINE_TB)
                 .find().projection(Projections.include("_id")).cursor();
         cursor.forEachRemaining(s ->{
-            codes.remove(s.getString("_id"));
+            codes.remove(；.getString("_id"));
         });*/
         for (int i = 0; i < codes.size(); i++) {
             String code = codes.get(i);

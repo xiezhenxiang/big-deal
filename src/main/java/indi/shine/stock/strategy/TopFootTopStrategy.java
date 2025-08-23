@@ -1,5 +1,6 @@
 package indi.shine.stock.strategy;
 
+import indi.shine.stock.bean.po.BuyPoint;
 import indi.shine.stock.bean.po.DayKline;
 
 import java.util.List;
@@ -24,33 +25,29 @@ public class TopFootTopStrategy implements Strategy {
 
     @Override
     public void getBuyPoint(String code) {
-        List<DayKline> lineDays = dayKlines(code);
-        int index = 0;
-        lineDays = lineDays.subList(index, lineDays.size());
-        DayKline day1 = lineDays.get(index + 2);
-        DayKline day2 = lineDays.get(index + 1);
-        DayKline day3 = lineDays.get(index);
-
-        // 涨停天
-        if (day1.getChg() < 9.8) {
-            return;
+        int crossDay = 10;
+        List<DayKline> lineDays = dayKlines(code, crossDay);
+        for (int i = 2; i < lineDays.size(); i++) {
+            DayKline day1 = lineDays.get(i);
+            DayKline day2 = lineDays.get(i - 1);
+            DayKline day3 = lineDays.get(i - 2);
+            // 涨停天
+            if (day1.getChg() < 9.8) {
+                continue;
+            }
+            // 分歧天
+            double volChg = (day2.getVol() - day1.getVol()) * 1.0 / day1.getVol();
+            if (day2.getOpenPrice() < day1.getPrice()
+                    || day2.getChg() > 0 || day2.getChg() < -3.1
+                    || volChg > 1.6) {
+                continue;
+            }
+            // 洗盘天
+            if (day3.getOpenPrice() > day2.getPrice()
+                    || day3.getChg() > -3 || day3.getVol() > day2.getVol()) {
+                continue;
+            }
+            BUY_POINTS.add(new BuyPoint(code, day3.getDay(), 0, day3.getPrice()));
         }
-
-        // 分歧天
-        double volChg = (day2.getVol() - day1.getVol()) * 1.0 / day1.getVol();
-        if (day2.getOpenPrice() < day1.getPrice()
-                || day2.getChg() > 0 || day2.getChg() < -3.1
-                || volChg > 1.6) {
-            return;
-        }
-
-        // 洗盘天
-        if (day3.getOpenPrice() > day2.getPrice()
-                || day3.getChg() > -3 || day3.getVol() > day2.getVol()) {
-            return;
-        }
-
-
-        System.out.println(code + " " + day3.getDay() + " " + day3.getChg());
     }
 }

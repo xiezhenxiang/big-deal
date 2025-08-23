@@ -15,7 +15,7 @@ public class HammerStrategy implements Strategy {
 
     @Override
     public void getBuyPoint(String code) {
-        List<DayKline> lineDays = dayKlines(code);
+        List<DayKline> lineDays = dayKlines(code, 100);
         DayKline lineDay = lineDays.get(0);
         double score = hammerScore(lineDay);
         if (score > 0) {

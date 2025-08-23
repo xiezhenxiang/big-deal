@@ -1,10 +1,14 @@
 package indi.shine.stock.common.biz;
 
-import ai.plantdata.script.util.other.JacksonUtil;
+import ai.plantdata.script.util.other.CollectionUtil;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import indi.shine.stock.bean.po.DayKline;
 import indi.shine.stock.env.EnvConfig;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +35,12 @@ public class DataCenterBiz {
         return ls;
     }
 
-    public static List<DayKline> dayKlines(String code) {
+    public static List<DayKline> dayKlines(String code, Integer lastDays) {
         List<DayKline> klines = new ArrayList<>();
-        MongoCursor<Document> cursor = MONGO_UTIL.find(BIG_DEAL_DB, STOCKS_DAY_KLINE_TB, new Document("_id", code));
+        final MongoCursor<Document> cursor = MONGO_UTIL.getClient().getDatabase(BIG_DEAL_DB).getCollection(STOCKS_DAY_KLINE_TB)
+                .find(new Document("_id", code)).projection(Projections.slice("klines", lastDays)).cursor();
         if (cursor.hasNext()) {
-            String str = cursor.next().getString("klines");
-            List<String> ls = JacksonUtil.readValue(str, List.class, String.class);
+            List<String> ls = cursor.next().getList("klines", String.class);
             for (String l : ls) {
                 klines.add(parseDayKline(l));
             }
@@ -44,7 +48,7 @@ public class DataCenterBiz {
         return klines;
     }
 
-    private static DayKline parseDayKline(String kline) {
+    public static DayKline parseDayKline(String kline) {
         String[] arr = kline.split(",");
         String day = arr[0];
         Double openPrice = Double.parseDouble(arr[1]);
@@ -72,5 +76,63 @@ public class DataCenterBiz {
     public static Long toLong(String str) {
         int lastIndex = str.contains(".") ? str.indexOf(".") : str.length();
         return Long.parseLong(str.substring(0, lastIndex));
+    }
+
+    public static void printMaxPriceCode(Double maxPrice) {
+        List<String> ls = new ArrayList<>();
+        MongoCollection<Document> collection = MONGO_UTIL.getClient().getDatabase(BIG_DEAL_DB).getCollection(STOCKS_DAY_KLINE_TB);
+        Bson projection = Projections.slice("klines", 1);
+        MongoCursor<Document> cursor = collection.find().projection(projection).cursor();
+        cursor.forEachRemaining(s -> {
+            List<String> klines = s.getList("klines", String.class);
+            if(!CollectionUtil.isEmpty(klines)) {
+                DayKline k = parseDayKline(klines.get(0));
+                if (k.maxPrice.equals(maxPrice)) {
+                    String code = s.getString("_id");
+                    System.out.println(code + " " + codeName(code));
+                }
+            }
+        });
+    }
+
+    public static String codeName(String code) {
+        return MONGO_UTIL.find(BIG_DEAL_DB, STOCKS_TB, Filters.eq("_id", code)).next().getString("name");
+    }
+
+    public static void printCodeByM5(double m5) {
+        MongoCollection<Document> collection = MONGO_UTIL.getClient().getDatabase(BIG_DEAL_DB).getCollection(STOCKS_DAY_KLINE_TB);
+        Bson projection = Projections.slice("klines", 5);
+        MongoCursor<Document> cursor = collection.find().projection(projection).cursor();
+        cursor.forEachRemaining(s -> {
+            String code = s.getString("_id");
+            List<String> klines = s.getList("klines", String.class);
+            if(!CollectionUtil.isEmpty(klines)) {
+                double total = 0;
+                for (String kline : klines) {
+                    DayKline k = parseDayKline(kline);
+                    total += k.price;
+                }
+                double mm5 = Math.round(total / klines.size() * 100.0) / 100.0;
+                if (mm5 == m5) {
+                    System.out.println(code + " " + codeName(code));
+                }
+            }
+        });
+    }
+
+    public static void printCodeByPrice(Double price) {
+        MongoCollection<Document> collection = MONGO_UTIL.getClient().getDatabase(BIG_DEAL_DB).getCollection(STOCKS_DAY_KLINE_TB);
+        Bson projection = Projections.slice("klines", 1);
+        MongoCursor<Document> cursor = collection.find().projection(projection).cursor();
+        cursor.forEachRemaining(s -> {
+            List<String> klines = s.getList("klines", String.class);
+            if(!CollectionUtil.isEmpty(klines)) {
+                DayKline k = parseDayKline(klines.get(0));
+                if (k.price.equals(price)) {
+                    String code = s.getString("_id");
+                    System.out.println(code + " " + codeName(code));
+                }
+            }
+        });
     }
 }

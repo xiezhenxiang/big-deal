@@ -90,7 +90,7 @@ public class StockAllCrawler/* extends Thread*/ {
                 doc.put("type", aType);
                 doc.put("createAt", TimeUtil.nowStr());
                 bulkInsertBiz.add(doc);
-                if (needUpdateCodes.contains(code) && obj.get("f3") instanceof Number) {
+                if (needUpdateCodes.contains(code) && obj.get("f3") instanceof Number && !obj.get("f5").toString().contains("-")) {
                     Double chg = 10.0;
                     // 涨跌幅
                     chg = obj.getDouble("f3");
@@ -108,7 +108,7 @@ public class StockAllCrawler/* extends Thread*/ {
                 }
                 count ++;
             }
-            Thread.sleep(RANDOM.nextInt(301) + 1000L);
+            Thread.sleep(RANDOM.nextInt(301) + 500L);
             log.info("process: " + count);
         }
         log.info("{}市当日数据爬取完毕, 共{}支股票", aType, count);

@@ -18,20 +18,25 @@ public class ZhenCangStrategy implements Strategy {
 
     @Override
     public void getBuyPoint(String code) {
-        List<DayKline> lineDays = dayKlines(code);
-        lineDays = lineDays.subList(8, lineDays.size());
-        DayKline day = lineDays.get(0);
-        DayKline preDay = lineDays.get(1);
-        if (day.getChg() < 1.8 || day.getChg() >= 5) {
+        int crossDay = 10;
+        List<DayKline> kLines = dayKlines(code, crossDay);
+        if (kLines.size() < crossDay) {
             return;
         }
-        if (preDay.getChg() < -7 || preDay.getChg() > -4) {
-            return;
+        for (int i = 0; i < crossDay - 1; i ++) {
+            DayKline day = kLines.get(i);
+            DayKline preDay = kLines.get(i + 1);
+            if (day.getChg() < 1.5 || day.getChg() >= 5) {
+                continue;
+            }
+            if (preDay.getChg() < -7 || preDay.getChg() > -4) {
+                continue;
+            }
+            double score = preDay.getVol() * 1.0 / day.getVol();
+            if (score < 1.5) {
+                continue;
+            }
+            BUY_POINTS.add(new BuyPoint(code, day.getDay(), score, day.getPrice()));
         }
-        double score = preDay.getVol() * 1.0 / day.getVol();
-        if (score < 1.5) {
-            return;
-        }
-        BUY_POINTS.add(new BuyPoint(code, day.getDay(), score, day.getPrice()));
     }
 }
