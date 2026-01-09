@@ -1,8 +1,8 @@
 package indi.shine.stock.env;
 
 import ai.plantdata.script.util.database.MongoUtil;
-import ai.plantdata.script.util.other.HttpUtil;
 import ai.plantdata.script.util.other.ThreadUtil;
+import ai.plantdata.script.util.other.http.HttpUtil;
 
 import java.util.Random;
 
@@ -34,9 +34,13 @@ public class EnvConfig {
             "secid=%s.%s&ndays=1&iscr=0&iscca=0&wbp2u=8888326347002756|0|1|0|web";
 
     public static String kLineUrl(String code) {
-       Integer t = code.startsWith("6") ? 1 : 0;
-       // 近三年的
-       return String.format(DAY_K_URL, t, code, 750) + "&_=" + System.currentTimeMillis();
+        // 近三年的
+        return kLineUrl(code, 750);
+    }
+
+    public static String kLineUrl(String code, Integer dayNum) {
+        Integer t = code.startsWith("6") ? 1 : 0;
+        return String.format(DAY_K_URL, t, code, dayNum) + "&_=" + System.currentTimeMillis();
     }
 
     public static String mkLineUrl(String code) {

@@ -1,6 +1,6 @@
 package indi.shine.stock.strategy;
 
-import ai.plantdata.script.util.other.HttpUtil;
+import ai.plantdata.script.util.other.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import indi.shine.stock.env.EnvConfig;
 import lombok.extern.slf4j.Slf4j;

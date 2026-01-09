@@ -1,6 +1,6 @@
 package indi.shine.stock.convertible;
 
-import ai.plantdata.script.util.other.HttpUtil;
+import ai.plantdata.script.util.other.http.HttpUtil;
 import ai.plantdata.script.util.other.JacksonUtil;
 import ai.plantdata.script.util.other.StringUtils;
 import com.alibaba.fastjson.JSONObject;
