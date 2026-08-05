@@ -30,6 +30,8 @@ public class StockAllCrawler/* extends Thread*/ {
     private static final String H_URL = "https://push2.eastmoney.com/api/qt/clist/get?fid=f62&po=1&pz=100&pn=pageNo&np=1&fltt=2&invt=2&ut=8dec03ba335b81bf4ebdf7b29ec27d15&fs=m:1+t:2+f:!2,m:1+t:23+f:!2&fields=f2,f3,f5,f6,f12,f14,f15,f16,f17";
     /** 深市URL */
     private static final String S_URL = "https://push2.eastmoney.com/api/qt/clist/get?fid=f62&po=1&pz=50&pn=pageNo&np=1&fltt=2&invt=2&ut=8dec03ba335b81bf4ebdf7b29ec27d15&fs=m:0+t:6+f:!2,m:0+t:13+f:!2,m:0+t:80+f:!2&fields=f2,f3,f5,f6,f12,f14,f15,f16,f17";
+    /** 创业板 */
+    private static final String C_URL = "https://push2delay.eastmoney.com/api/qt/clist/get?fid=f62&po=1&pz=50&pn=pageNo&np=1&fltt=2&invt=2&ut=8dec03ba335b81bf4ebdf7b29ec27d15&fs=m%3A0%2Bt%3A80%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf3%2Cf62%2Cf184%2Cf66%2Cf69%2Cf72%2Cf75%2Cf78%2Cf81%2Cf84%2Cf87%2Cf204%2Cf205%2Cf124%2Cf1%2Cf13";
 
     public static void main(String[] args) throws InterruptedException {
         start();
@@ -46,9 +48,9 @@ public class StockAllCrawler/* extends Thread*/ {
         loadNeedUpdateCodes();
         bulkInsertBiz = new BulkInsertBiz(BIG_DEAL_DB, STOCKS_TB, 100,"_id");
         bulkPushBiz = new BulkPushBiz(BIG_DEAL_DB, STOCKS_DAY_KLINE_TB, 100, "klines");
-        HttpUtil.setRetryNum(Integer.MAX_VALUE);
-        crawl(H_URL, "沪");
-        crawl(S_URL, "深");
+        // crawl(H_URL, "沪");
+        // crawl(S_URL, "深");
+        crawl(C_URL, "创业板");
         bulkInsertBiz.flush(true);
         bulkPushBiz.flush(true);
     }
@@ -73,6 +75,7 @@ public class StockAllCrawler/* extends Thread*/ {
         for (int i = 1; i < Integer.MAX_VALUE; i ++) {
             String url = aUrl.replace("pageNo", i + "");
             String rs = HttpUtil.sendGet(url);
+            rs = rs.substring(rs.indexOf("{"), rs.lastIndexOf("}") + 1);
             JSONObject dataObj = JSONObject.parseObject(rs).getJSONObject("data");
             if (dataObj == null) {
                 break;
@@ -108,7 +111,7 @@ public class StockAllCrawler/* extends Thread*/ {
                 }
                 count ++;
             }
-            Thread.sleep(RANDOM.nextInt(301) + 500L);
+            Thread.sleep(RANDOM.nextInt(301) + 10000L);
             log.info("process: " + count);
         }
         log.info("{}市当日数据爬取完毕, 共{}支股票", aType, count);

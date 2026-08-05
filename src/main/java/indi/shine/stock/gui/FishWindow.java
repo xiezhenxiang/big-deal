@@ -1,10 +1,10 @@
+/*
 package indi.shine.stock.gui;
 
 import ai.plantdata.script.util.other.StringUtils;
 import ai.plantdata.script.util.other.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.WinDef;
 import indi.shine.stock.bean.po.DayKline;
 import indi.shine.stock.common.InitBiz;
 import indi.shine.stock.gui.bean.GuiStock;
@@ -32,13 +32,15 @@ import static com.sun.jna.Native.getWindowPointer;
 import static indi.shine.stock.common.biz.DataCenterBiz.parseDayKline;
 import static indi.shine.stock.env.EnvConfig.kLineUrl;
 
+*/
 /**
  * 股票悬浮窗（Windows透明+鼠标穿透+右侧固定）
- */
+ *//*
+
 @Slf4j
 public class FishWindow extends JFrame {
 
-     private int fontSize = 10;
+    private int fontSize = 10;
     // 行间距
     private int rowSpacing = 5;
     // 宽度
@@ -70,9 +72,11 @@ public class FishWindow extends JFrame {
         SwingUtilities.invokeLater(this::initWindowsTransparent);
     }
 
-    /**
+    */
+/**
      * 步骤1：仅初始化基础窗口属性（不涉及句柄操作）
-     */
+     *//*
+
     private void initBasicWindow() {
         // 不显示任务栏窗口
         this.setType(Window.Type.UTILITY);
@@ -108,11 +112,13 @@ public class FishWindow extends JFrame {
         GridLayout gridLayout = new GridLayout(0, 2, 0, rowSpacing);
         panel.setLayout(gridLayout);
         renderStockPanel();
-        /*JButton configBtn = new JButton("配置");
+        */
+/*JButton configBtn = new JButton("配置");
         configBtn.setOpaque(false);
         configBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
         configBtn.addActionListener(new ConfigListener());
-        panel.add(configBtn);*/
+        panel.add(configBtn);*//*
+
         add(panel);
     }
 
@@ -153,18 +159,22 @@ public class FishWindow extends JFrame {
         }, 0, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
-    /**
+    */
+/**
      * 新增：刷新窗口高度（适配股票数量/字体变化）
-     */
+     *//*
+
     private void resizeWindow() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int newHeight = stockList.size() * (fontSize + rowSpacing) + 20;
         setBounds(screenSize.width - windowWidth - 15, windowTopOffsetY, windowWidth, newHeight);
     }
 
-    /**
+    */
+/**
      * 步骤3：延迟初始化Windows透明+鼠标穿透（核心修复：确保displayable）
-     */
+     *//*
+
     private void initWindowsTransparent() {
         if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
             return;
@@ -274,9 +284,11 @@ public class FishWindow extends JFrame {
         return stock;
     }
 
-    /**
+    */
+/**
      * 新增：初始化系统托盘（右下角图标+右键菜单）
-     */
+     *//*
+
     private void initSystemTray() {
         // 1. 判断系统是否支持托盘
         if (!SystemTray.isSupported()) {
@@ -318,3 +330,4 @@ public class FishWindow extends JFrame {
         });
     }
 }
+*/

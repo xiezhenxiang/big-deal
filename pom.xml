@@ -6,7 +6,7 @@
     <parent>
         <groupId>ai.plantdata.script</groupId>
         <artifactId>script-parent</artifactId>
-        <version>4.3.16</version>
+        <version>4.3.20</version>
     </parent>
 
     <groupId>indi.shine</groupId>
@@ -40,14 +40,29 @@
             <version>3.8.0</version>
         </dependency>
         <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.1-jre</version>
+        </dependency>
+        <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>5.13.0</version>
         </dependency>
         <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
-            <version>5.13.0</version>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.6.0</version>
         </dependency>
     </dependencies>
     <build>
