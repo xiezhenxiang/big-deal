@@ -70,6 +70,14 @@ public class DataCenterBiz {
         lineDay.setMaxPrice(maxPrice);
         lineDay.setVol(vol);
         lineDay.setVolCoin(volCoin);
+        // 换手率 f61，老数据可能缺失该字段
+        if (arr.length > 10) {
+            try {
+                lineDay.setTurnoverRate(Double.parseDouble(arr[10]));
+            } catch (NumberFormatException e) {
+                lineDay.setTurnoverRate(null);
+            }
+        }
         return lineDay;
     }
 
